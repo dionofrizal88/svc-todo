@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+package svc_todo;
+
+option go_package = "svc-todo/pb/user";
+
+message Empty {}
+
+message User{
+  string name = 1;
+  string uuid =2;
+}
+
+message AddUserRequest {
+  string name = 1;  
+}
+
+message Id{
+  int64 id =1;
+}
+
+message UserResponse {
+  bool status = 1;
+  repeated User data = 2;
+}
+
+message AddUserResponse {
+  bool status = 1;
+  string message = 2;
+}
+
+service UserService {
+  rpc Get(Empty) returns (UserResponse);
+  rpc Add(AddUserRequest) returns (AddUserResponse);
+}
+
+// protoc --proto_path=proto proto/*.proto --go_out=$GOPATH/src --go-grpc_out=$GOPATH/src

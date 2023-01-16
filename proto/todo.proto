@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package svc_todo;
+
+option go_package = "svc-todo/pb/todo";
+
+import "user.proto";
+
+// enum Status {
+//   Done = 0;
+//   Progress = 1;
+// }
+
+message Todo{
+  string title = 1;
+  string status = 2;
+  string done_at = 3;
+  User user = 4;
+  string uuid = 5;
+}
+
+message AddTodoRequest{
+  string title = 1;
+  string status = 2;
+  string done_at =3;
+}
+
+message AddTodoResponse {
+  bool status = 1;
+  string message = 2;
+}
+
+message AssignRequest{
+  string user_uuid =1;
+  string todo_uuid =2;
+}
+
+message TodoResponse {
+  bool status = 1;
+  repeated Todo data = 2;
+}
+
+message MarkAsDoneRequest {
+  string todo_uuid = 1;
+}
+
+service TodoService {
+  rpc List(Empty) returns (TodoResponse);
+  rpc AddTodo(AddTodoRequest) returns (AddTodoResponse);
+  rpc Assign(AssignRequest) returns (AddTodoResponse);
+  rpc MarkAsDone(MarkAsDoneRequest) returns (AddTodoResponse);
+}
+
+// protoc --proto_path=proto proto/*.proto --go_out=$GOPATH/src --go-grpc_out=$GOPATH/src
