@@ -55,12 +55,12 @@ func GetRedis() *Client {
 
 var allowValue int = 0
 var allow *int = &allowValue
-
+const key_limiter string = "key-limiter"
 // var rcmdGet *redis.StringCmd
 
 func CreateLimitter() (bool, string, error) {
 	log.Println("allowed in createLimit", allowValue)
-	limiterValue := client.TTL(context.Background(), "key-limiter")
+	limiterValue := client.TTL(context.Background(), key_limiter)
 	timeLeft := limiterValue.Val().Seconds()
 
 	// handling if time exist and allow is 0
@@ -107,10 +107,9 @@ func CreateLimitter() (bool, string, error) {
 func addLimiter() (bool, error){
 	allowValue = 5
 	ttl := time.Duration(1) * time.Minute
-	key := "key-limiter"
 
 	// store data using SET command
-	rcmd := client.Set(context.Background(), key, allowValue, ttl)
+	rcmd := client.Set(context.Background(), key_limiter, allowValue, ttl)
 	if err := rcmd.Err(); err != nil {
 		fmt.Printf("unable to SET data. error: %v", err)
 		return	false, err
